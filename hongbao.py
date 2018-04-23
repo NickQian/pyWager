@@ -2,17 +2,21 @@
 
 """ play method: Weixin niuniu, generate hongbao
 #  ----
-#  License: BSD 
+#  License: BSD
 #  ----
 #  0.1: init version - 2017.6 - by Nick Qian
 """
 
 import random
+#import numpy as np
+from cfg import *
+
+
 
 def calRandomValue(total, num):     #min, max,
 
     total = float(total)
-    num = int(num)          
+    num = int(num)
     bags = []
     minBag = 0.01
     if(num < 1):
@@ -20,7 +24,7 @@ def calRandomValue(total, num):     #min, max,
     if num == 1:
         return
 
-    
+
     i = 0
     while(i < num ):
         i += 1
@@ -48,16 +52,20 @@ def calRandomValue(total, num):     #min, max,
             bags.append("%.2f" %total)
     #print bags
     return bags
-    
+
+
+
 def faHongbao(playersNum):
     houzi = random.randint(1, 6) 
     redbagTotalAmount = playersNum * 2 + (float(houzi))/10   #
-    
+
     if VERBOSE_C == True:
         print ("FaHongBao: redbagTotalAmount:", redbagTotalAmount, "playersNum: ", playersNum)
     bags = calRandomValue(redbagTotalAmount, playersNum)
 
     return bags
+
+
 
 def qiang(bags, playersNum):
     myBagSN     = random.randint(0, playersNum-1) 
@@ -72,16 +80,19 @@ def qiang(bags, playersNum):
         print ("My bag:", myBag, "dealerBag:", dealerBag )
     return myBag, dealerBag
 
+
+
+
 def qiang_fz(bags, times, playersNum):  # with assistant
-    
+
     dealerBagSN = random.randint(0, playersNum-1)
     dealerBag = bags[dealerBagSN]
-    
+
     myBagSN     = random.randint(0, playersNum-1)
     #----- avoid same SN -----
-    while (myBagSN == dealerBagSN):                   
+    while (myBagSN == dealerBagSN):
         dealerBagSN = random.randint(0, playersNum-1)
-        
+
     #---- avoid small bag -----
     myBag = bags[myBagSN]
     if (times%STRENGH_TUISUAN ==0) and (times !=0):                 # every 5 times fz 1
@@ -96,54 +107,64 @@ def qiang_fz(bags, times, playersNum):  # with assistant
                 if VERBOSE_B:
                     print ('DEBUG_P::: request change bag success, or without N the org niu>7 | rW now is:', rW)
                 break
-    
-    if VERBOSE_D == True:        
+
+    if VERBOSE_D == True:
         print ("My SN:", myBagSN, "dealer SN:", dealerBagSN)
         print ("My bag:", myBag, "dealerBag:", dealerBag )
-        
+
     return myBag, dealerBag
 
+
+
+
+
 def compute(myBag, dealerBag, myBet, myMoneyIn):
-    global IWin
-    global ILost
-    
+    #global IWin
+    #global ILost
+
     my_rW     = computeOneBag(myBag)
     if VERBOSE_C:
         print ("Info: my_rW is:", my_rW )
+
     dealer_rW = computeOneBag(dealerBag)
     if VERBOSE_C == True:
         print ("Info: dealer_rW is:", dealer_rW )
+
     if my_rW > dealer_rW:
         myMoneyOut = myMoneyIn + my_rW*myBet
-        IWin += 1
+        Res = "WIN"
     elif my_rW < dealer_rW:
         myMoneyOut = myMoneyIn - dealer_rW*myBet
-        ILost += 1
+        Res = "LOST"
     else:
         myMoneyOut = myMoneyIn          # ??? Speed of qiang ??
+        Res = "DRAW"
 
     if VERBOSE_B == True:
         print "$$$:", myMoneyOut-myMoneyIn, "| myMoneyOut is:", myMoneyOut
-    return myMoneyOut
+
+    return myMoneyOut, Res
+
+
 
 
 def computeOneBag(threeWei):        # string in
     rW = 0
 
     if (threeWei[-4:] == '1.11') or (threeWei[-4:] == '2.22') or (threeWei[-4:] == '3.33'):
-        rW = 15         
+        rW = 15
         #print ("This Niu is Baozi", rW)
     elif (threeWei[-4:] == '1.00') or (threeWei[-4:] == '2.00') or (threeWei[-4:] == '3.00'):
         rW = 14
         #print ("This Niu is ManNiu", rW)
     elif (threeWei[-4:] == '1.23') or (threeWei[-4:] == '2.34') or (threeWei[-4:] == '3.45'):
-        rW = 13        
+        rW = 13
         #print ("This Niu is ShunZi", rW)
     elif (threeWei[-4] == '0') and (threeWei[-2] == threeWei[-1] ):
-        rW = 12         
+        rW = 12
         #print ("This Niu is DuiZi", rW)
     elif (threeWei[-4] == '0') and (threeWei[-1] == '0'):
-        rW = 11         
+        rW = 11
         #print ("This Niu is JinNiu", rW)
     else:
         niuSum = int(threeWei[-4]) + int(threeWei[-1]) + int(threeWei[-2]) 
@@ -152,6 +173,6 @@ def computeOneBag(threeWei):        # string in
             niu = 10
         #print ("This Niu is: ", niu)
         rW = niu
-    
+
     return rW
-    
+
