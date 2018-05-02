@@ -9,7 +9,7 @@
 
 import random
 from cfg import *
-  
+
 
 def bet_kelly(P, moneyInHand):  #P(win) = 1-Q
     Q = 1 - float(P)
@@ -34,9 +34,18 @@ def bet_kelly(P, moneyInHand):  #P(win) = 1-Q
     return int(bet)
 
 
+
 def bet_gamblerFallacy(lost_sum, rate):
     bet_gf  = (lost_sum * 1.2)/rate
     return bet_gf
+
+
+
+def bet_average():
+    res = bet_kelly(0.56, MyMoneyInEveryDay)
+    return res
+
+
 
 
 def gen_randomList(total_pair):
