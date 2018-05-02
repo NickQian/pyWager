@@ -1,5 +1,5 @@
 # pyWager
-run simulation of wager use python
+run simulation of gamble/wager use python
 
 这个项目是用来模拟赌博和投资/投机的； </br>
 模拟各种参赌策略是否有效，以及如何下注以取得最大化收益：  </br>
